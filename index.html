@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Alarm-clock</title>
+
+</head>
+
+<body>
+    <!-- digital clock container -->
+    <div class="main-container" id="main-container">
+        <div class="clock digital-clock" id="digital-clock">
+            <div class="current-time hour" id="hour">10</div>
+            <div class="current-time minutes" id="minutes">10</div>
+            <div class="current-time seconds" id="seconds">10</div>
+            <div class="current-time am-pm" id="am-pm">pm</div>
+
+
+        </div>
+        <!-- Alarm Set -->
+        <div class="alarm-set-container" id="alarm-set-container">
+
+            <div class="alarm-set-input-container" id="alarm-set-input-container">
+                <div class="alarm-time-hours-container alarm-time-dropdown-container" id="alarm-time-hours-container">
+                    <input type="text" onclick="event,toggleOption()" name="" class="alarm-time alarm-time-text-area alarm-time-hours-text-area" id="alarm-time-hours-text-area" readonly value="05">
+                    <div class="alarm-time-hours-option-container alarm-time-option-container" id="alarm-time-hours-dropdown-container">
+                        <!-- <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-hours-option alarm-time text-center" id="alarm-time-hours-1">1</div> -->
+
+                    </div>
+                </div>
+
+                <div class="alarm-time-minutes-container alarm-time-dropdown-container" id="alarm-time-minutes-container">
+                    <input type="text" onclick="event,toggleOption()" name="" class="alarm-time alarm-time-text-area alarm-time-minutes-text-area" id="alarm-time-minutes-text-area" readonly value="05">
+                    <div class="alarm-time-minutes-option-container alarm-time-option-container" id="alarm-time-minutes-dropdown-container">
+                        <!-- <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-minutes-option alarm-time text-center" id="alarm-time-minutes-1">1</div> -->
+
+                    </div>
+                </div>
+
+                <div class="alarm-time-seconds-container alarm-time-dropdown-container" id="alarm-time-seconds-container">
+                    <input type="text" onclick="event,toggleOption()" name="" class="alarm-time alarm-time-text-area alarm-time-seconds-text-area" id="alarm-time-seconds-text-area" readonly value="05">
+                    <div class="alarm-time-seconds-option-container alarm-time-option-container" id="alarm-time-seconds-dropdown-container">
+                        <!-- <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-seconds-option alarm-time text-center" id="alarm-time-seconds-1">1</div> -->
+
+                    </div>
+                </div>
+                <!-- AM Pm DropDown -->
+                <div class="alarm-time-ampm-container alarm-time-dropdown-container" id="alarm-time-ampm-container">
+                    <input type="text" onclick="event,toggleOption()" name="" class="alarm-time alarm-time-text-area alarm-time-ampm-text-area" id="alarm-time-ampm-text-area" readonly value="AM">
+                    <div class="alarm-time-ampm-option-container alarm-time-option-container" id="alarm-time-ampm-dropdown-container">
+                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-ampm-option alarm-time text-center" id="alarm-time-ampm-AM">AM</div>
+                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-ampm-option alarm-time text-center" id="alarm-time-ampm-PM">PM</div>
+
+                    </div>
+                </div>
+
+                <!-- <div name="" id="" class=" alarm-time AmPmDropdown ">
+                    <input type="text " onclick="event,toggleOption()" name=" " id=" " class="AmPmTextBox alarm-time " placeholder="AM " readonly>
+                    <div class="AmPmDropdown-option " id="AmPmDropdown-option ">
+                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time text-center" id="alarm-time-am">AM</div>
+                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time text-center" id="alarm-time-pm">PM</div>
+                    </div>
+                </div> -->
+                <!-- <div class="alarm-time "=" ">AM</div>
+                    <div class="alarm-time " value=" ">PM</div> -->
+                <button class="alarm-time set-alarm-time-button " id="set-alarm-time-button " onclick="event,(()=>console.log(event.target.id))()">Set Alarm</button>
+
+            </div>
+            <div class="time-difference-message" id="time-difference-message">
+                <!-- remaining time Message will be displayed Here through Javascript -->
+            </div>
+        </div>
+
+    </div>
+    <script src="script.js" defer></script>
+</body>
+
+</html>

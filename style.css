@@ -1,0 +1,240 @@
+        *,
+         ::before,
+         ::after {
+            /* ht width will also include margin,border */
+            box-sizing: border-box;
+            font-size: 2vw;
+            margin: 0;
+            padding: 0;
+        }
+        
+         :root {
+            /* global scope of variable */
+            /* we will be changing color dynamically through javascript */
+            --hue: 200;
+            --saturation: 50%;
+            /* hsl-->hue ,saturation ,lightness */
+            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+            --background-color: hsl(var(--hue), var(--saturation), 20%);
+            --clock-backkgound-url: url(./assets/images/afternoon.jpg);
+            --night-backgroud-gradient: linear-gradient(to top, #283E51, #0A2342);
+        }
+        
+        @font-face {
+            font-family: digital-clock-font;
+            src: url(digital-7.regular.ttf);
+        }
+        
+        body {
+            background: #040615;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .main-container {
+            width: 40vw;
+            margin: 0;
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var( --night-backgroud-gradient);
+            border: 2px solid red;
+        }
+        
+        #digital-clock {
+            /* padding: 1em; */
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            /* font-size: 4rem; */
+            background-image: var(--clock-backkgound-url);
+            background-position: 100%;
+            /* Center the image */
+            background-repeat: no-repeat;
+            /* Do not repeat the image */
+            background-size: 100%;
+            /* Resize the background image to cover the entire container */
+            ;
+            /* opacity: 0.7; */
+            height: 10rem;
+            width: 100%;
+        }
+        
+        #digital-clock div {
+            opacity: 1 !important;
+            font-size: 2rem;
+            font-family: digital-clock-font;
+        }
+        
+        .alarm-set-container {
+            width: 100%;
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .alarm-time {
+            /* outline removes the border when focused */
+            /* display: inline-block; */
+            outline: none;
+            -webkit-appearance: none;
+            border: 0;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 10%;
+            box-shadow: 0px 0px 33px -6px rgba(0, 0, 0, 0.75);
+            text-align: center;
+            font-size: 1em;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #alarm-set-input-container {
+            display: flex;
+        }
+        
+        #alarm-set-input-container>* {
+            margin: 0.1rem;
+        }
+        
+        .set-alarm-time-button {
+            font-size: 0.5rem;
+        }
+        
+        .set-alarm-time-button:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+        
+        .AmPmDropdown .AmPmTextBox {
+            cursor: pointer;
+        }
+        
+        .AmPmDropdown {
+            position: relative;
+        }
+        
+        .AmPmDropdown::before {
+            content: " ";
+            position: absolute;
+            width: 0.7rem;
+            height: 0.7rem;
+            border: 2px solid #333;
+            top: 30%;
+            right: 4%;
+            z-index: 1000;
+            border: 0.2rem solid #333;
+            border-top: 0.2rem solid #fff;
+            border-right: 0.2rem solid #fff;
+            transform: rotate(-45deg);
+            transition: 0.5s;
+            pointer-events: none;
+        }
+        
+        .AmPmDropdown.active::before {
+            transform: rotate(-225deg);
+            top: 40%;
+        }
+        
+        .AmPmDropdown-option {
+            position: absolute;
+            /* background: white; */
+            overflow: hidden;
+            top: -50%;
+            display: none;
+        }
+        
+        .AmPmDropdown.active .AmPmDropdown-option {
+            display: block;
+        }
+        
+        .AmPmDropdown-option div {
+            /* padding: 0.1rem; */
+            background: white;
+            margin: 0.1rem 0;
+            cursor: pointer;
+        }
+        
+        .AmPmDropdown-option div:hover {
+            opacity: 0.8;
+        }
+        
+        .text-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .alarm-time-dropdown-container {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .alarm-time-dropdown-container .alarm-time-text-area {
+            /* position: absolute; */
+            cursor: pointer;
+        }
+        
+        .alarm-time-dropdown-container .alarm-time-text-area:hover {
+            /* position: absolute; */
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+        
+        .alarm-time-option-container {
+            position: absolute;
+            /* flex */
+            /* display: flex;
+            flex-direction: column; */
+            /* flex */
+            height: 10rem;
+            overflow: scroll;
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
+            scrollbar-width: none;
+            /* Firefox */
+            top: -3rem;
+            display: none;
+            width: auto;
+            border-radius: 5%;
+            /* border: 2px solid red; */
+            /* 
+            box-shadow: 0px 0px 33px -6px rgba(0, 0, 0, 0.75); */
+        }
+        
+        .alarm-time-option-container div {
+            position: relative;
+            /* padding: 0.1rem; */
+            background: white;
+            /* margin: 0.1rem 0; */
+            cursor: pointer;
+            margin-top: 0.1rem;
+            transition: all 0.05s ease-in-out;
+        }
+        
+        .alarm-time-option-container div:hover {
+            /* position: absolute; */
+            z-index: 1000;
+            transform: translateZ(2rem)
+            /* border-radius: 0.2rem; */
+            /* background: yellow; */
+        }
+        
+        .alarm-time-option-container::-webkit-scrollbar {
+            display: none;
+            /* Safari and Chrome */
+        }
+        
+        .toggle-alarm-time-display {
+            display: block;
+        }
+        
+        .hide-alarm-textArea-display {
+            opacity: 0;
+        }
