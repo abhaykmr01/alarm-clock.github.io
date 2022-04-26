@@ -17,7 +17,7 @@
             --foreground-color: hsl(var(--hue), var(--saturation), 75%);
             --background-color: hsl(var(--hue), var(--saturation), 20%);
             --clock-backkgound-url: url(./assets/images/afternoon.jpg);
-            --night-backgroud-gradient: linear-gradient(to top, #283E51, #0A2342);
+            --night-backgroud-gradient: rgba(131, 76, 113, 1)
         }
         
         @font-face {
@@ -237,4 +237,31 @@
         
         .hide-alarm-textArea-display {
             opacity: 0;
+        }
+        /* alarm-list styles */
+        
+        .alarm-list-container {
+            /* display: flex;
+            align-items: center;
+            flex-direction: column; */
+            height: 30vh;
+            width: 90%;
+            margin-top: 0.2rem;
+        }
+        
+        .alarm-list {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(139, 114, 133);
+            border-radius: 0.2rem;
+            margin: 0.2rem;
+        }
+        
+        .alarm-list>div {
+            margin: 0.1rem;
+            color: white;
         }
