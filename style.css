@@ -34,6 +34,7 @@
         
         .main-container {
             width: 40vw;
+            height: 100vh;
             margin: 0;
             display: flex;
             /* justify-content: center; */
@@ -85,12 +86,12 @@
             outline: none;
             -webkit-appearance: none;
             border: 0;
-            width: 3rem;
-            height: 3rem;
+            width: 2rem;
+            height: 2rem;
             border-radius: 10%;
             box-shadow: 0px 0px 33px -6px rgba(0, 0, 0, 0.75);
             text-align: center;
-            font-size: 1em;
+            font-size: 1rem;
             margin: 0;
             padding: 0;
         }
@@ -231,6 +232,10 @@
             /* Safari and Chrome */
         }
         
+        .time-difference-message {
+            height: 1.5rem;
+        }
+        
         .toggle-alarm-time-display {
             display: block;
         }
@@ -244,24 +249,68 @@
             /* display: flex;
             align-items: center;
             flex-direction: column; */
-            height: 30vh;
+            height: 70vh;
             width: 90%;
             margin-top: 0.2rem;
+            overflow: scroll;
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
+            scrollbar-width: none;
+        }
+        
+        .alarm-list-container::-webkit-scrollbar {
+            display: none;
+            /* Safari and Chrome */
+        }
+        
+        .common-alarm-list-container {
+            background-color: rgb(139, 114, 133);
+            width: 100%;
+            border-radius: 0.2rem;
+            margin: 0.2rem;
         }
         
         .alarm-list {
             display: flex;
             flex-wrap: wrap;
-            width: 100%;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            background-color: rgb(139, 114, 133);
-            border-radius: 0.2rem;
-            margin: 0.2rem;
         }
         
         .alarm-list>div {
             margin: 0.1rem;
             color: white;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            *,
+             ::before,
+             ::after {
+                font-size: 6vw;
+            }
+            .main-container {
+                width: 100vw;
+            }
+        }
+        /* for tablets */
+        
+        @media only screen and (min-width: 600px) and (max-width: 992px) {
+            *,
+             ::before,
+             ::after {
+                font-size: 4vw;
+            }
+            .main-container {
+                width: 100vw;
+            }
+        }
+        /* for laptops */
+        
+        @media only screen and (min-width: 992px) {
+            *,
+             ::before,
+             ::after {
+                font-size: 2vw;
+            }
         }
