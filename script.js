@@ -482,6 +482,7 @@ function addAlarm() {
     localStorage.setItem("alarms", JSON.stringify(alarmList));
 
     updateAlarmList();
+    updateCurrentTime();
 
 
 
