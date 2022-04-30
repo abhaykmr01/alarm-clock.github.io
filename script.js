@@ -58,6 +58,11 @@ let alarmList = [];
 let isUpdateTImeExecuteOnce = false;
 let minuteTimout;
 let secondTimeout;
+let nightSymbolUrl = "./assets/images/night-symbol.png";
+let sunriseSymbolUrl = "./assets/images/sunrise-symbol.png";
+let noonSymbolUrl = "./assets/images/noon-symbol.png";
+let sunsetSymbolUrl = "./assets/images/sunset-symbol.png";
+let sleepingSymbolUrl = "./assets/images/sleeping-symbol.png";
 
 
 function updateCurrentTime() {
@@ -497,6 +502,39 @@ function sortAlarmListArray() {
 
 }
 
+function getSymbolUrl(hr, ampm) {
+    let symbolUrl;
+
+
+    if (ampm == "AM" && hr > 5 && hr < 12) {
+        // morning symbol
+        symbolUrl = sunriseSymbolUrl;
+
+    }
+    if (ampm == "PM" && (hr >= 12 || hr >= 1) && hr < 5) {
+        // noon symbol
+        symbolUrl = noonSymbolUrl;
+
+    }
+    if (ampm == "PM" && hr >= 5 && hr < 7) {
+        // evening symbol
+        symbolUrl = sunsetSymbolUrl;
+
+    }
+    if (ampm == "PM" && hr >= 7 && hr < 12) {
+        // night symbol
+        symbolUrl = nightSymbolUrl;
+
+    }
+    if (ampm == "AM" && (hr >= 12 || hr >= 1) && hr < 5) {
+        // sleeping symbol
+        symbolUrl = sleepingSymbolUrl;
+
+    }
+    return symbolUrl;
+
+}
+
 function updateAlarmList() {
     // if (localStorage.getItem("alarms") == undefined); {
     //     return;
@@ -520,17 +558,19 @@ function updateAlarmList() {
         let min = sortedAlarmList[value][0].alarmMinutes;
         let sec = sortedAlarmList[value][0].alarmSecomds;
         let ampm = sortedAlarmList[value][0].alarmAmPm;
-
-
         let obj = sortedAlarmList[value][0];
+        let symbolUrl = getSymbolUrl(hr, ampm);
+
+
+
 
 
         alarmListContainerElem.innerHTML += `
         <div class="alarm-list-${value}-container common-alarm-list-container" id="alarm-list-${value}-container">
             <div class="alarm-list alarm-list-1" id="alarm-list-${value}">
-                <div class="alarm-list-symbol" id="alarm-list-${value}-symbol"></div>
+                <div class="alarm-list-symbol" id="alarm-list-${value}-symbol"><img src=${symbolUrl} alt="" width="50" height="50"></div>
                 <div class="alarm-list-time" id="alarm-list-1-time">
-                    <span class="alram-list-hour" id="alarm-list-${value}-hour">${hr}</span>
+                    <span class="alram-list-hour" id="alarm-list-${value}-hour">${hr} : </span>
                     <span class="alram-list-min" id="alarm-list-${value}-min">${min}</span>
                     <span class="alram-list-ampm" id="alarm-list-${value}-ampm">${ampm}</span>
                 </div>
