@@ -41,11 +41,16 @@ let alarmTimeAmPmTextAreaElem = document.querySelector('#alarm-time-ampm-text-ar
 let alarmTimeHoursTextAreaElem = document.querySelector('#alarm-time-hours-text-area');
 let alarmTimeMinutesTextAreaElem = document.querySelector('#alarm-time-minutes-text-area');
 let alarmTimeSecondsTextAreaElem = document.querySelector('#alarm-time-seconds-text-area');
+
+
+const alarmSetContainer = document.querySelector('.alarm-set-container');
 let alarmListContainerElem = document.querySelector('#alarm-list-container')
+const btn = document.getElementById(".toggle-button");
+const circle = document.getElementById(".circle");
 let changeBackground = true;
 
 
-document.onload = setInterval(updateCurrentTime, 1000);
+
 // variables for current time
 let currentTimeHours;
 let currentTimeMinutes;
@@ -63,6 +68,8 @@ let sunriseSymbolUrl = "./assets/images/sunrise-symbol.png";
 let noonSymbolUrl = "./assets/images/noon-symbol.png";
 let sunsetSymbolUrl = "./assets/images/sunset-symbol.png";
 let sleepingSymbolUrl = "./assets/images/sleeping-symbol.png";
+document.onload = setInterval(updateCurrentTime, 1000);
+
 
 
 function updateCurrentTime() {
@@ -105,6 +112,19 @@ function updateCurrentTime() {
 
 }
 
+function updateLocalStorage(sortedListObj, property, update) {
+    for (let i = 0; i < alarmList.length; i++) {
+        if (sortedListObj.alarmTimeInString == alarmList[i].alarmTimeInString) {
+
+            alarmList[property] = update;
+            break;
+        }
+
+    }
+    localStorage.setItem("alarms", JSON.stringify(alarmList));
+
+}
+
 function upadteAlarmListMessage() {
     if (typeof sortedAlarmList === 'undefined') {
         return;
@@ -125,6 +145,20 @@ function upadteAlarmListMessage() {
 
 
         let diff = (timeEnd - timeStart);
+
+        //ring the bell when diff becomes 0 and alarm is not paused
+
+        if (diff == 0 && sortedAlarmList[i][0].active) {
+            ringTheBell(alarmTimeInString);
+            // console.log("bells ringing for", alarmTimeInString);
+            sortedAlarmList[i][0].active = false;
+            updateLocalStorage(sortedAlarmList[i][0], "active", "true");
+            updateAlarmList();
+
+        }
+
+
+
 
         if (diff < 0) {
             diff += 86400000;
@@ -165,6 +199,15 @@ function upadteAlarmListMessage() {
 
     }
 }
+
+// alarm off function
+function ringTheBell(alarmTimeInString) {
+    window.alert("ringing")
+        // also update the alarm lists
+    updateCurrentTime();
+
+}
+
 // format time 
 // add 0 to single digit time
 function append0ToSingleDigit(timeElem) {
@@ -218,7 +261,7 @@ function fillAlarmTimeTextArea() {
 
 
 function toggleOption() {
-    let alarmTimeInputContaniner = document.getElementById('alarm-set-input-container');
+    // let alarmTimeInputContaniner = document.getElementById('alarm-set-input-container');
     // if same button is clicked twice toggle
     // if (!alarmTimeInputContaniner.contains(event.target)) {
     //     return;
@@ -279,6 +322,30 @@ function scrollToHighlightedvalueInOption(textAreaElem) {
 
 }
 // window.addEventListener("click", toggleOption);
+
+
+// closees the dropdown button if clicked anywhere on the window
+document.addEventListener("click", e => {
+    // console.log(e.target.value)
+
+
+    if (typeof e.target.value === 'undefined') {
+        if (currentOpenedDropdownElem != null) {
+            //close any other options which are opened
+            // console.log(currentOpenedDropdownElem);
+            // currentOpenedDropdownElem.style.display = 'none';
+            currentOpenedDropdownElem.classList.toggle('toggle-alarm-time-display');
+            textAreaHidden.classList.toggle('hide-alarm-textArea-display');
+            currentOpenedDropdownElem = null;
+            textAreaHidden = null;
+            // return;
+
+        }
+    }
+
+
+})
+
 function addAllHtmlElements() {
 
 
@@ -499,6 +566,7 @@ function sortAlarmListArray() {
         let timeDifferenceObject = timeDifference(alarmList[value].alarmTimeInString);
         sortedAlarmList.push([alarmList[value], timeDifferenceObject.diff]);
     }
+    // sortedAlarmList contain alarmList objext and timeDifference betweeen current time
     sortedAlarmList.sort(function(a, b) { return a[1] - b[1] })
 
 }
@@ -507,12 +575,12 @@ function getSymbolUrl(hr, ampm) {
     let symbolUrl;
 
 
-    if (ampm == "AM" && hr > 5 && hr < 12) {
+    if (ampm == "AM" && hr >= 5 && hr < 12) {
         // morning symbol
         symbolUrl = sunriseSymbolUrl;
 
     }
-    if (ampm == "PM" && (hr >= 12 || hr >= 1) && hr < 5) {
+    if (ampm == "PM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
         // noon symbol
         symbolUrl = noonSymbolUrl;
 
@@ -527,7 +595,7 @@ function getSymbolUrl(hr, ampm) {
         symbolUrl = nightSymbolUrl;
 
     }
-    if (ampm == "AM" && (hr >= 12 || hr >= 1) && hr < 5) {
+    if (ampm == "AM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
         // sleeping symbol
         symbolUrl = sleepingSymbolUrl;
 
@@ -568,20 +636,26 @@ function updateAlarmList() {
 
         alarmListContainerElem.innerHTML += `
         <div class="alarm-list-${value}-container common-alarm-list-container" id="alarm-list-${value}-container">
-            <div class="alarm-list alarm-list-1" id="alarm-list-${value}">
-                <div class="alarm-list-symbol" id="alarm-list-${value}-symbol"><img src=${symbolUrl} alt="" width="50" height="50"></div>
+            <div class="alarm-list alarm-list-${value}" id="alarm-list-${value}">
+                <div class="alarm-list-symbol" id="alarm-list-${value}-symbol" style='background-image: url(${symbolUrl})'></div>
                 <div class="alarm-list-time" id="alarm-list-1-time">
-                    <span class="alram-list-hour" id="alarm-list-${value}-hour">${hr} : </span>
-                    <span class="alram-list-min" id="alarm-list-${value}-min">${min}</span>
+                <div class="text-center">
+                    <span class="alram-list-hour" id="alarm-list-${value}-hour">${hr} :&nbsp</span>
+                    <span class="alram-list-min" id="alarm-list-${value}-min">${min}&nbsp</span>
                     <span class="alram-list-ampm" id="alarm-list-${value}-ampm">${ampm}</span>
+                    </div>
+                    <div class="alarm-list-time-difference-message text-center active" id="alarm-list-${value}-time-difference">
+           
+                    </div>
                 </div>
                 <div class="alarm-list-btn" id="alarm-list-${value}-btn">
-                    <button type="button" onclick="event,deleteAlarm('${encodeURIComponent(JSON.stringify(obj))}')">Delete</button>
+                    <button type="button" onclick="event,deleteAlarm('${encodeURIComponent(JSON.stringify(obj))}')">  <i class="fas fa-trash-alt icon trash-icon"></i></button>
+                    <div class="toggle-button" id="toggle-button-${value}" onclick="event,toggleOFF('${encodeURIComponent(JSON.stringify(obj))}',${value})">
+                    <div class="circle animate" id="toggle-circle-${value}"></div>
+                </div>
                 </div>
             </div>
-            <div class="alarm-list-time-difference-message text-center active" id="alarm-list-${value}-time-difference">
            
-            </div>
             </div>
             
            `;
@@ -590,20 +664,54 @@ function updateAlarmList() {
         // alarmTimeMessage(targetElement, hr, min, sec, ampm, frequency);
 
 
+        const circleElem = document.getElementById(`toggle-circle-${value}`);
+        const btnElem = document.getElementById(`toggle-button-${value}`);
+        let alarmListElem = document.getElementById(`alarm-list-${value}`);
+
+        let alarmListMsg = document.querySelector(`#alarm-list-${value}-time-difference`);
+
+
+
+
+
+
+
+        if (!obj.active) {
+            circleElem.style.cssText = `transform:translateX(-0.7rem)`;
+            // all except last one is opaque
+            alarmListElem.children[0].style.opacity = "0.5";
+            alarmListElem.children[1].style.opacity = "0.5";
+
+
+            btnElem.style.backgroundColor = "grey";
+            alarmListMsg.style.display = "none";
+
+
+
+        } else {
+            circleElem.style.cssText = `transform:translateX(0)`;
+
+            btnElem.style.backgroundColor = "rgb(24, 159, 221)";
+
+
+
+        }
+
+
     }
 
 
 
 }
 
-function alarmTimeMessage(targetElement, hr, min, sec, ampm, frequency) {
+// function alarmTimeMessage(targetElement, hr, min, sec, ampm, frequency) {
 
-    let alarminterval = setInterval(function() {
+//     let alarminterval = setInterval(function() {
 
-        setAlarmMessage(targetElement, hr, min, sec, ampm);
+//         setAlarmMessage(targetElement, hr, min, sec, ampm);
 
-    }, parseInt(frequency));
-}
+//     }, parseInt(frequency));
+// }
 
 function deleteAlarm(obj) {
     // 
@@ -613,7 +721,7 @@ function deleteAlarm(obj) {
 
     for (let i = 0; i < alarmList.length; i++) {
         if (obj.alarmTimeInString == alarmList[i].alarmTimeInString) {
-            console.log("found you");
+            // remove that element from list
             alarmList.splice(i, 1);
             break;
         }
@@ -630,6 +738,70 @@ function deleteAlarm(obj) {
 
 
 }
+
+function toggleOFF(obj, val) {
+    obj = JSON.parse(decodeURIComponent(obj))
+
+    const circleElem = document.getElementById(`toggle-circle-${val}`);
+    const btnElem = document.getElementById(`toggle-button-${val}`);
+    let alarmListElem = document.getElementById(`alarm-list-${val}`);
+    let alarmListMsg = document.querySelector(`#alarm-list-${val}-time-difference`);
+
+    let alarmActive;
+    let i;
+
+    console.log(obj.active);
+
+    for (let value in alarmList) {
+        if (alarmList[value].alarmTimeInString === obj.alarmTimeInString) {
+            alarmActive = alarmList[value].active;
+            i = value;
+            console.log(alarmList[value])
+
+            break;
+        }
+    }
+
+
+    if (alarmActive) {
+        circleElem.style.cssText = `transform:translateX(-0.7rem)`;
+        alarmListElem.children[0].style.opacity = "0.5";
+        alarmListElem.children[1].style.opacity = "0.5";
+        btnElem.style.backgroundColor = "grey";
+        btnElem.style.opacity = "1"
+        alarmListMsg.style.display = "none";
+        // console.log("active");
+        alarmActive = false;
+
+
+    } else {
+        circleElem.style.cssText = `transform:translateX(0)`;
+        alarmListElem.children[0].style.opacity = "1";
+        alarmListElem.children[1].style.opacity = "1";
+        btnElem.style.backgroundColor = "rgb(24, 159, 221)";
+        alarmListMsg.style.display = "block";
+        alarmActive = true;
+        // console.log("inactive");
+
+
+    }
+    sortedAlarmList[val][0].active = alarmActive;
+    alarmList[i].active = alarmActive;
+
+
+    // 
+    // updateCurrentTime();
+
+
+
+    // update the list
+    localStorage.setItem("alarms", JSON.stringify(alarmList));
+    //updateAlarmList();
+
+
+
+}
+
 
 
 
