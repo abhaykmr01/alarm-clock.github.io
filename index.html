@@ -5,7 +5,25 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="57x57" href="./assets/favicon//apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="./assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media_query.css">
     <script src="https://kit.fontawesome.com/3ab75a4ed7.js" crossorigin="anonymous"></script>
     <script src="script.js" defer></script>
 
@@ -16,11 +34,30 @@
 <body>
     <!-- digital clock container -->
     <div class="main-container" id="main-container">
-        <div class="clock digital-clock" id="digital-clock">
-            <div class="current-time hour" id="hour">10</div>
-            <div class="current-time minutes" id="minutes">10</div>
-            <div class="current-time seconds" id="seconds">10</div>
-            <div class="current-time am-pm" id="am-pm">pm</div>
+        <div class="ringing-popup">
+            <div class="ringing-msg text-center">
+                <!-- filled through javascript-->
+            </div>
+            <div class="ringing-btns text-center">
+                <button id="stop-ring" class="btn">stop</button>
+            </div>
+
+        </div>
+        <div class="overlay"></div>
+        <div class="digital-clock-container">
+            <div class="current-day-time-symbol"></div>
+            <div class="current-time-container">
+                <div class="clock digital-clock" id="digital-clock">
+
+                    <div class="current-time text-center hour" id="hour">10</div>
+                    <div class="current-time text-center minutes" id="minutes">10</div>
+                    <div class="current-time text-center seconds" id="seconds">10</div>
+                    <div class="current-time text-center am-pm" id="am-pm">pm</div>
+
+
+                </div>
+                <div class="current-date text-center">1 may</div>
+            </div>
 
 
         </div>
@@ -61,15 +98,7 @@
                     </div>
                 </div>
 
-                <!-- <div name="" id="" class=" alarm-time AmPmDropdown ">
-                    <input type="text " onclick="event,toggleOption()" name=" " id=" " class="AmPmTextBox alarm-time " placeholder="AM " readonly>
-                    <div class="AmPmDropdown-option " id="AmPmDropdown-option ">
-                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time text-center" id="alarm-time-am">AM</div>
-                        <div onclick="event,fillAlarmTimeTextArea()" class="alarm-time text-center" id="alarm-time-pm">PM</div>
-                    </div>
-                </div> -->
-                <!-- <div class="alarm-time "=" ">AM</div>
-                    <div class="alarm-time " value=" ">PM</div> -->
+
                 <button class="alarm-time set-alarm-time-button " id="set-alarm-time-button " onclick="event,addAlarm()">Set Alarm</button>
 
             </div>
@@ -80,23 +109,17 @@
         <!-- Alarm lists -->
         <div class="alarm-list-container" id="alarm-list-container">
 
-            <!-- <div class="alarm-list alarm-list-1" id="alarm-list-1">
-                <div class="alarm-list-symbol" id="alarm-list-1-symbol">day</div>
-                <div class="alarm-list-time" id="alarm-list-1-time">
-                    <span class="alram-list-hour" id="alarm-list-1-hour">09</span>
-                    <span class="alram-list-min" id="alarm-list-1-min">09</span>
-                    <span class="alram-list-ampm" id="alarm-list-1-ampm">AM</span>
-                </div>
-                <div class="alarm-list-btn" id="alarm-list-1-btn">
-                    <button type="button">Delete</button>
-                </div>
-            </div> -->
-
-
+            <!-- Added through javascript -->
         </div>
     </div>
+    <audio id="belllAudio" class="bell" style="display:none;">
+        <source src="./assets/music/bell.wav" type="audio/wav">
+        
+       
+      </audio>
 
     </div>
+
 
 </body>
 

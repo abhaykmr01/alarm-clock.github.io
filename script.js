@@ -30,7 +30,19 @@ class Alarm {
         return hr;
 
     }
+
 }
+
+
+const currDateElem = document.querySelector(".current-date");
+const currSymbolElem = document.querySelector(".current-day-time-symbol");
+const stopRingingBtn = document.querySelector("#stop-ring");
+const ringingPopupElem = document.querySelector(".ringing-popup");
+const ringingMsg = document.querySelector(".ringing-msg");
+
+const bell = document.querySelector(".bell");
+
+const overlayElem = document.querySelector(".overlay");
 let hour = document.querySelector("#hour");
 let minutes = document.querySelector("#minutes");
 let seconds = document.querySelector("#seconds");
@@ -51,6 +63,7 @@ let changeBackground = true;
 
 
 
+
 // variables for current time
 let currentTimeHours;
 let currentTimeMinutes;
@@ -68,13 +81,37 @@ let sunriseSymbolUrl = "./assets/images/sunrise-symbol.png";
 let noonSymbolUrl = "./assets/images/noon-symbol.png";
 let sunsetSymbolUrl = "./assets/images/sunset-symbol.png";
 let sleepingSymbolUrl = "./assets/images/sleeping-symbol.png";
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let currDateInString;
+let changeDate = true;;
+let changeSymbol = true;
+let bellRinging;
 document.onload = setInterval(updateCurrentTime, 1000);
 
+stopRingingBtn.addEventListener("click", () => {
 
+    window.clearTimeout(bellRinging);
+
+    bell.pause();
+    ringingPopupElem.style.display = "none";
+    overlayElem.style.display = "none"
+
+
+
+
+})
 
 function updateCurrentTime() {
     // creating a object of Date class to get current time
     let currentTime = new Date();
+
+
+
+
+
+
+
 
 
     // getting hour min and sec from currentTime object
@@ -91,8 +128,8 @@ function updateCurrentTime() {
     currentTimeAMPM = (($currentTimeHours) => currentTimeHours >= 12 ? "PM" : "AM")();
     // Template literals (``)allow variables in strings:
     currentTimeHours = `${append0ToSingleDigit(currentTimeHours % 12 || 12)}`;
-    hour.innerHTML = currentTimeHours + ":";
-    minutes.innerHTML = currentTimeMinutes + ":";
+    hour.innerHTML = currentTimeHours + "&nbsp:&nbsp";
+    minutes.innerHTML = currentTimeMinutes + "&nbsp:&nbsp";
     seconds.innerHTML = currentTimeSeconds + "&nbsp";
     ampm.innerHTML = currentTimeAMPM;
     currentTimeInString = currentTimeHours + ":" + currentTimeMinutes + ":" + currentTimeSeconds + " " + currentTimeAMPM;
@@ -103,6 +140,42 @@ function updateCurrentTime() {
         // call the fill function only once
         fillTheAlarmSetInput(currentTimeHours, currentTimeMinutes, currentTimeSeconds, currentTimeAMPM);
         isUpdateTImeExecuteOnce = true;
+    }
+    // cahnge date only once on starting of new day
+    if (currentTimeAMPM == 'AM' && currentTimeHours == '12' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
+        changeDate = true;
+        changeSymbol = true;
+    }
+    if (currentTimeAMPM == 'AM' && currentTimeHours == '5' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
+        changeSymbol = true;
+    }
+    if (currentTimeAMPM == 'PM' && currentTimeHours == '12' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
+
+        changeSymbol = true;
+    }
+    if (currentTimeAMPM == 'PM' && currentTimeHours == '5' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
+
+        changeSymbol = true;
+    }
+    if (currentTimeAMPM == 'PM' && currentTimeHours == '7' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
+
+        changeSymbol = true;
+    }
+    if (changeSymbol) {
+        let symbolUrl = getSymbolUrl(currentTimeHours, currentTimeAMPM);
+        currSymbolElem.style = `background-image: url(${symbolUrl})`;
+        changeSymbol = true;
+
+    }
+    if (changeDate) {
+        //    update only once irrespective of setInterval
+        let currDay = days[currentTime.getDay()];
+        let currMonth = months[currentTime.getMonth()];
+        let currDate = append0ToSingleDigit(currentTime.getDate());
+        currDateInString = `${currDay},&nbsp${currDate}&nbsp${currMonth}`;
+        currDateElem.innerHTML = currDateInString;
+        changeDate = true;
+
     }
 
     upadteAlarmListMessage();
@@ -202,11 +275,43 @@ function upadteAlarmListMessage() {
 
 // alarm off function
 function ringTheBell(alarmTimeInString) {
-    window.alert("ringing")
-        // also update the alarm lists
+
+    //window.alert("Alarm ringing");
+    ringingPopupElem.style.display = "block";
+    overlayElem.style.display = "block"
+
+
+    ringingMsg.innerHTML = `Alarm ringing for ${alarmTimeInString}`;
+
+
+    ringing();
+    window.clearTimeout(bellRinging);
+    bellRinging = window.setTimeout(stopRinging, 10000);
+
     updateCurrentTime();
 
+
 }
+
+function ringing() {
+    bell.loop = true;
+    bell.play();
+
+}
+
+function stopRinging() {
+
+    console.log("evebt exist")
+    window.clearTimeout(bellRinging);
+    bell.pause();
+    ringingPopupElem.style.display = "none";
+    overlayElem.style.display = "none"
+
+
+
+}
+
+
 
 // format time 
 // add 0 to single digit time
@@ -321,7 +426,7 @@ function scrollToHighlightedvalueInOption(textAreaElem) {
     targetOptionElem.scrollIntoView()
 
 }
-// window.addEventListener("click", toggleOption);
+
 
 
 // closees the dropdown button if clicked anywhere on the window
@@ -677,8 +782,9 @@ function updateAlarmList() {
 
 
         if (!obj.active) {
-            circleElem.style.cssText = `transform:translateX(-0.7rem)`;
+            circleElem.style.cssText = `transform:translateX(-0.6rem)`;
             // all except last one is opaque
+            alarmListElem.style.backgroundColor = "rgba(42, 39, 42, 0.3)";
             alarmListElem.children[0].style.opacity = "0.5";
             alarmListElem.children[1].style.opacity = "0.5";
 
@@ -765,6 +871,7 @@ function toggleOFF(obj, val) {
 
     if (alarmActive) {
         circleElem.style.cssText = `transform:translateX(-0.7rem)`;
+        alarmListElem.style.backgroundColor = "rgba(42, 39, 42, 0.3)";
         alarmListElem.children[0].style.opacity = "0.5";
         alarmListElem.children[1].style.opacity = "0.5";
         btnElem.style.backgroundColor = "grey";
@@ -776,6 +883,7 @@ function toggleOFF(obj, val) {
 
     } else {
         circleElem.style.cssText = `transform:translateX(0)`;
+        alarmListElem.style.backgroundColor = "rgba(42, 39, 42, 1)";
         alarmListElem.children[0].style.opacity = "1";
         alarmListElem.children[1].style.opacity = "1";
         btnElem.style.backgroundColor = "rgb(24, 159, 221)";

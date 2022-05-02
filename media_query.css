@@ -1,0 +1,81 @@
+@media only screen and (max-width: 600px) {
+    *,
+     ::before,
+     ::after {
+        font-size: 6vw;
+    }
+    .main-container {
+        width: 100vw;
+    }
+}
+
+
+/* for tablets */
+
+@media only screen and (min-width: 600px) and (max-width: 992px) {
+    *,
+     ::before,
+     ::after {
+        font-size: 4vw;
+    }
+    .main-container {
+        width: 95vw;
+    }
+}
+
+
+/* for laptops */
+
+@media only screen and (min-width: 992px) {
+    *,
+     ::before,
+     ::after {
+        font-size: 2vw;
+    }
+}
+
+@media only screen and (max-height: 700px) {
+    *,
+     ::before,
+     ::after {
+        font-size: 3.5vh;
+    }
+    .alarm-list-container {
+        width: 95%;
+    }
+}
+
+@media only screen and (min-height: 700px) {
+    *,
+     ::before,
+     ::after {
+        font-size: 4vh;
+    }
+    .alarm-list-container {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 992px) and (max-height: 600px) {
+    /* tablets */
+    *,
+     ::before,
+     ::after {
+        font-size: 3vw;
+    }
+    .alarm-list-container {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 992px) and (min-height: 992px) {
+    /* big phone */
+    *,
+     ::before,
+     ::after {
+        font-size: 4vh;
+    }
+    .alarm-list-container {
+        width: 100%;
+    }
+}
