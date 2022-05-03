@@ -71,8 +71,6 @@ function updateCurrentTime() {
     let currentTime = new Date();
     // getting hour min and sec from currentTime object
     // by calling relevant function
-
-
     // we are passing the the obtained time to append0ToSingleDigit
     // function to append 0 at starting of single digit number
     //By default hour will be in 0-24
@@ -93,26 +91,7 @@ function updateCurrentTime() {
         fillTheAlarmSetInput(currentTimeHours, currentTimeMinutes, currentTimeSeconds, currentTimeAMPM);
         isUpdateTImeExecuteOnce = true;
     }
-    // cahnge date only once on starting of new day
-    if (currentTimeAMPM == 'AM' && currentTimeHours == '12' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
-        changeDate = true;
-        changeSymbol = true;
-    }
-    if (currentTimeAMPM == 'AM' && currentTimeHours == '5' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
-        changeSymbol = true;
-    }
-    if (currentTimeAMPM == 'PM' && currentTimeHours == '12' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
-
-        changeSymbol = true;
-    }
-    if (currentTimeAMPM == 'PM' && currentTimeHours == '5' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
-
-        changeSymbol = true;
-    }
-    if (currentTimeAMPM == 'PM' && currentTimeHours == '7' && currentTimeMinutes == '00' && currentTimeSeconds == '01') {
-
-        changeSymbol = true;
-    }
+    // changing date and imagge
 
     let symbolUrl = getSymbolUrl(currentTimeHours, currentTimeAMPM);
     currSymbolElem.style = `background-image: url(${symbolUrl})`;
@@ -136,6 +115,8 @@ function updateLocalStorage(sortedListObj, property, update) {
     }
     localStorage.setItem("alarms", JSON.stringify(alarmList));
 }
+
+// function for updating the time remaining message displayed in alarm list
 
 function upadteAlarmListMessage() {
     if (typeof sortedAlarmList === 'undefined') {
@@ -221,21 +202,51 @@ function append0ToSingleDigit(timeElem) {
     return timeElem < 10 ? "0" + timeElem : timeElem;
 }
 
-
+// function for filling the default value of input type text
 function fillTheAlarmSetInput(currentTimeHour, currentTimeMinutes, currentTimeSeconds, currentTimeAMPM) {
-    console.log(currentTimeHour, currentTimeMinutes, currentTimeAMPM);
+
     alarmTimeAmPmTextAreaElem.value = currentTimeAMPM;
     alarmTimeHoursTextAreaElem.value = currentTimeHours;
     alarmTimeMinutesTextAreaElem.value = currentTimeMinutes;
     alarmTimeSecondsTextAreaElem.value = currentTimeSeconds;
 }
 
+function addAllHtmlElements() {
+    // adding hours option
+    const alarmTimeHoursDropdownContainerElem = document.getElementById("alarm-time-hours-dropdown-container");
+    for (let i = 1; i <= 12; i++) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        alarmTimeHoursDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-hours-option alarm-time text-center" id="alarm-time-hours-${i}">${i}</div>`
+    }
+    // adding minutes option
+    const alarmTimeMinutesDropdownContainerElem = document.getElementById("alarm-time-minutes-dropdown-container");
+    for (let i = 0; i <= 59; i++) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        alarmTimeMinutesDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-minutes-option alarm-time text-center" id="alarm-time-minutes-${i}">${i}</div>`
+    }
+    // adding seconds option
+    const alarmTimeSecondsDropdownContainerElem = document.getElementById("alarm-time-seconds-dropdown-container");
+    for (let i = 0; i <= 59; i++) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        alarmTimeSecondsDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-seconds-option alarm-time text-center" id="alarm-time-seconds-${i}">${i}</div>`
+    }
+}
+
+
 let currentOpenedDropdownElem = null;
 let textAreaHidden = null;
 
+// function to fill the text area which takes the input as alarm time
 function fillAlarmTimeTextArea() {
     const eventvalue = event.target.innerHTML;
     //option->optioncontainer->dropdowncontainer->input:type text
+    // fills the textArea to the same value as the div we clikced
     event.target.parentElement.parentElement.firstElementChild.value = eventvalue;
     event.target.parentElement.classList.toggle('toggle-alarm-time-display');
     textAreaHidden.classList.toggle('hide-alarm-textArea-display');
@@ -245,6 +256,56 @@ function fillAlarmTimeTextArea() {
     setAlarmMessage(timeDifferenceMessageElem, alarmTimeHoursTextAreaElem.value, alarmTimeMinutesTextAreaElem.value, alarmTimeSecondsTextAreaElem.value, alarmTimeAmPmTextAreaElem.value);
 }
 
+const setAlarmtextAreaElem = document.querySelector('#alarm-time-hours-text-area');
+setAlarmtextAreaElem.addEventListener('change', setAlarmMessage);
+
+// function for displaying time remaining for the alarm to go off
+function setAlarmMessage(targetElem, alarmTimeHour, alarmTimeMin, alarmSec, alarmTimeAmPm) {
+    // for showing remaining time remaining message
+    targetElem.innerHTML = "";
+    targetElem.innerHTML = "Alarm in ";
+    alarmTimeInString = alarmTimeHour + ":" + alarmTimeMin + ":" + alarmSec + " " + alarmTimeAmPm;
+    let timeStart = new Date("01/01/2007 " + currentTimeInString);
+    let timeEnd = new Date("01/01/2007 " + alarmTimeInString);
+    let remainingSeconds = 0;
+    let diff = (timeEnd - timeStart);
+    if (diff < 0) {
+        diff += 86400000;
+    }
+    // console.log(diff)
+    if (diff < 60000) {
+        remainingSeconds = diff / 1000;
+    }
+    diff = diff / 60000; //dividing by seconds and milliseconds
+    // difference is in minutes
+    //remainingSeconds = parseInt((diff % 1) * 60);
+    let minutes = parseInt(diff % 60);
+    let hours = parseInt(diff - minutes) / 60;
+    if (hours > 0) {
+        targetElem.innerHTML += `${hours} hours `;
+    }
+    if (minutes > 0) {
+        targetElem.innerHTML += `${minutes} minutes `;
+        if (typeof minuteTimout !== 'undefined') {
+            // console.log("cleared previous minute timeout")
+            clearTimeout(minuteTimout);
+        }
+        minuteTimout = setTimeout(() => targetElem.innerHTML = "", 8000);
+    }
+    //diff = parseInt(diff * 100);
+
+
+    if (remainingSeconds != 0) {
+        targetElem.innerHTML += `${remainingSeconds} seconds`;
+        if (typeof secondTimeout !== 'undefined') {
+            clearTimeout(secondTimeout);
+        }
+        secondTimeout = setTimeout(() => targetElem.innerHTML = "", 8000)
+    }
+}
+
+
+// function to to open and clos the dropdown list
 function toggleOption() {
     if (currentOpenedDropdownElem != null) {
         //close any other options which are opened
@@ -309,82 +370,9 @@ document.addEventListener("click", e => {
     }
 })
 
-function addAllHtmlElements() {
-    // adding hours option
-    const alarmTimeHoursDropdownContainerElem = document.getElementById("alarm-time-hours-dropdown-container");
-    for (let i = 1; i <= 12; i++) {
-        if (i < 10) {
-            i = "0" + i;
-        }
-        alarmTimeHoursDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-hours-option alarm-time text-center" id="alarm-time-hours-${i}">${i}</div>`
-    }
-    // adding minutes option
-    const alarmTimeMinutesDropdownContainerElem = document.getElementById("alarm-time-minutes-dropdown-container");
-    for (let i = 0; i <= 59; i++) {
-        if (i < 10) {
-            i = "0" + i;
-        }
-        alarmTimeMinutesDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-minutes-option alarm-time text-center" id="alarm-time-minutes-${i}">${i}</div>`
-    }
-    // adding seconds option
-    const alarmTimeSecondsDropdownContainerElem = document.getElementById("alarm-time-seconds-dropdown-container");
-    for (let i = 0; i <= 59; i++) {
-        if (i < 10) {
-            i = "0" + i;
-        }
-        alarmTimeSecondsDropdownContainerElem.innerHTML += `<div onclick="event,fillAlarmTimeTextArea()" class="alarm-time-seconds-option alarm-time text-center" id="alarm-time-seconds-${i}">${i}</div>`
-    }
-}
 
 
-const setAlarmtextAreaElem = document.querySelector('#alarm-time-hours-text-area');
-setAlarmtextAreaElem.addEventListener('change', setAlarmMessage);
-
-function setAlarmMessage(targetElem, alarmTimeHour, alarmTimeMin, alarmSec, alarmTimeAmPm) {
-    // for showing remaining time remaining message
-    targetElem.innerHTML = "";
-    targetElem.innerHTML = "Alarm in ";
-    alarmTimeInString = alarmTimeHour + ":" + alarmTimeMin + ":" + alarmSec + " " + alarmTimeAmPm;
-    let timeStart = new Date("01/01/2007 " + currentTimeInString);
-    let timeEnd = new Date("01/01/2007 " + alarmTimeInString);
-    let remainingSeconds = 0;
-    let diff = (timeEnd - timeStart);
-    if (diff < 0) {
-        diff += 86400000;
-    }
-    // console.log(diff)
-    if (diff < 60000) {
-        remainingSeconds = diff / 1000;
-    }
-    diff = diff / 60000; //dividing by seconds and milliseconds
-    // difference is in minutes
-    //remainingSeconds = parseInt((diff % 1) * 60);
-    let minutes = parseInt(diff % 60);
-    let hours = parseInt(diff - minutes) / 60;
-    if (hours > 0) {
-        targetElem.innerHTML += `${hours} hours `;
-    }
-    if (minutes > 0) {
-        targetElem.innerHTML += `${minutes} minutes `;
-        if (typeof minuteTimout !== 'undefined') {
-            // console.log("cleared previous minute timeout")
-            clearTimeout(minuteTimout);
-        }
-        minuteTimout = setTimeout(() => targetElem.innerHTML = "", 8000);
-    }
-    //diff = parseInt(diff * 100);
-
-
-    if (remainingSeconds != 0) {
-        targetElem.innerHTML += `${remainingSeconds} seconds`;
-        if (typeof secondTimeout !== 'undefined') {
-            clearTimeout(secondTimeout);
-        }
-        secondTimeout = setTimeout(() => targetElem.innerHTML = "", 8000)
-    }
-}
-
-
+// function for getting time difference between alarm and current time
 
 function timeDifference(alarmTimeInString) {
     let timeStart = new Date("01/01/2007 " + currentTimeInString);
@@ -409,14 +397,41 @@ function timeDifference(alarmTimeInString) {
     };
 }
 
+
+
+// Function for adding alarm to the list
+
+function addAlarm() {
+    alarmList = checkAlarams();
+    //arraylist for storing alarms objects
+    let hr = alarmTimeHoursTextAreaElem.value;
+    let min = alarmTimeMinutesTextAreaElem.value;
+    let sec = alarmTimeSecondsTextAreaElem.value;
+    let ampm = alarmTimeAmPmTextAreaElem.value;
+    alarmTimeInString = hr + ":" + min + ":" + sec + " " + ampm;
+    var forAlarmTimeInMilliSec = new Date("01/01/2007 " + alarmTimeInString);
+    if (isAlarmAlredyPreset(alarmTimeInString)) {
+        window.alert(`Alarm already set for ${alarmTimeInString}`);
+        return;
+    }
+    // creating an alarm object and pushing it to the alarmList
+    alarmList.push(new Alarm(hr, min, sec, ampm, alarmTimeInString, forAlarmTimeInMilliSec));
+    // we can only store key value pair as string in localStorage
+    // converting array to strings
+    localStorage.setItem("alarms", JSON.stringify(alarmList));
+    updateAlarmList();
+    updateCurrentTime();
+}
+
 function checkAlarams() {
+    // Function for checking if alarm list is present in local storage
     const isPresentinLocalStorage = localStorage.getItem("alarms");
     if (isPresentinLocalStorage) {
         alarmList = JSON.parse(isPresentinLocalStorage);
     }
     return alarmList;
 }
-
+// Function for checking if that particular alarm is already been set or not
 function isAlarmAlredyPreset(alarmTimeInString) {
     if (typeof sortedAlarmList !== 'undefined') {
         for (let value in sortedAlarmList) {
@@ -432,68 +447,7 @@ function isAlarmAlredyPreset(alarmTimeInString) {
 }
 
 
-function addAlarm() {
-    alarmList = checkAlarams();
-    //arraylist for storing alarms objects
-    let hr = alarmTimeHoursTextAreaElem.value;
-    let min = alarmTimeMinutesTextAreaElem.value;
-    let sec = alarmTimeSecondsTextAreaElem.value;
-    let ampm = alarmTimeAmPmTextAreaElem.value;
-    alarmTimeInString = hr + ":" + min + ":" + sec + " " + ampm;
-    var forAlarmTimeInMilliSec = new Date("01/01/2007 " + alarmTimeInString);
-    if (isAlarmAlredyPreset(alarmTimeInString)) {
-        window.alert(`Alarm already set for ${alarmTimeInString}`);
-        return;
-    }
-
-    alarmList.push(new Alarm(hr, min, sec, ampm, alarmTimeInString, forAlarmTimeInMilliSec));
-    // we can only store key value pair as string in localStorage
-    // converting array to strings
-    localStorage.setItem("alarms", JSON.stringify(alarmList));
-    updateAlarmList();
-    updateCurrentTime();
-}
-
-
-
-function sortAlarmListArray() {
-    // if localstorage has some value for alarms
-    sortedAlarmList = [];
-    alarmList = JSON.parse(localStorage.getItem("alarms"));
-    for (let value in alarmList) {
-        let timeDifferenceObject = timeDifference(alarmList[value].alarmTimeInString);
-        sortedAlarmList.push([alarmList[value], timeDifferenceObject.diff]);
-    }
-    // sortedAlarmList contain alarmList objext and timeDifference betweeen current time
-    sortedAlarmList.sort(function(a, b) { return a[1] - b[1] })
-
-}
-
-function getSymbolUrl(hr, ampm) {
-    let symbolUrl;
-    if (ampm == "AM" && hr >= 5 && hr < 12) {
-        // morning symbol
-        symbolUrl = sunriseSymbolUrl;
-    }
-    if (ampm == "PM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
-        // noon symbol
-        symbolUrl = noonSymbolUrl;
-    }
-    if (ampm == "PM" && hr >= 5 && hr < 7) {
-        // evening symbol
-        symbolUrl = sunsetSymbolUrl;
-    }
-    if (ampm == "PM" && hr >= 7 && hr < 12) {
-        // night symbol
-        symbolUrl = nightSymbolUrl;
-    }
-    if (ampm == "AM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
-        // sleeping symbol
-        symbolUrl = sleepingSymbolUrl;
-    }
-    return symbolUrl;
-}
-
+// Function for updating the alarm list after any modification has been done to the alarm list array
 function updateAlarmList() {
     const isPresentinLocalStorage = localStorage.getItem("alarms");
     if (isPresentinLocalStorage) {
@@ -554,6 +508,45 @@ function updateAlarmList() {
     }
 }
 
+function sortAlarmListArray() {
+    // if localstorage has some value for alarms
+    sortedAlarmList = [];
+    alarmList = JSON.parse(localStorage.getItem("alarms"));
+    for (let value in alarmList) {
+        let timeDifferenceObject = timeDifference(alarmList[value].alarmTimeInString);
+        sortedAlarmList.push([alarmList[value], timeDifferenceObject.diff]);
+    }
+    // sortedAlarmList contain alarmList objext and timeDifference betweeen current time
+    sortedAlarmList.sort(function(a, b) { return a[1] - b[1] })
+
+}
+
+function getSymbolUrl(hr, ampm) {
+    let symbolUrl;
+    if (ampm == "AM" && hr >= 5 && hr < 12) {
+        // morning symbol
+        symbolUrl = sunriseSymbolUrl;
+    }
+    if (ampm == "PM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
+        // noon symbol
+        symbolUrl = noonSymbolUrl;
+    }
+    if (ampm == "PM" && hr >= 5 && hr < 7) {
+        // evening symbol
+        symbolUrl = sunsetSymbolUrl;
+    }
+    if (ampm == "PM" && hr >= 7 && hr < 12) {
+        // night symbol
+        symbolUrl = nightSymbolUrl;
+    }
+    if (ampm == "AM" && ((hr >= 12) || (hr >= 1 && hr < 5))) {
+        // sleeping symbol
+        symbolUrl = sleepingSymbolUrl;
+    }
+    return symbolUrl;
+}
+
+// Function for deleting the alarm from the list
 
 function deleteAlarm(obj) {
     obj = JSON.parse(decodeURIComponent(obj))
@@ -570,6 +563,8 @@ function deleteAlarm(obj) {
     updateAlarmList();
     updateCurrentTime();
 }
+
+// Function for making the alarm active or incative
 
 function toggleOFF(obj, val) {
     obj = JSON.parse(decodeURIComponent(obj))
