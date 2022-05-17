@@ -8,7 +8,9 @@ This Project also includes interactive alarm features such as
 user can set multiple alarms and delete any of them at any time period. They can also make any alarm active or inactive that is on or off at any interval of time .
 
 
+## Demo
 
+[Demo](https://abhaykmr01.github.io/alarm-clock.github.io/)
 ## Features
 
 - Shows current Time And Date as well as image for that Part of the day
@@ -36,9 +38,7 @@ Javascript, HTML, CSS...
 ![App Screenshot](./assets/images/screenshots/galaxySS.png)
 
 
-## Demo
 
-[Demo](https://abhaykmr01.github.io/alarm-clock.github.io/)
 
 
 
